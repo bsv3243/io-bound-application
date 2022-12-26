@@ -15,6 +15,7 @@ public class Consumer {
     private final ObjectMapper objectMapper;
     private final PostRepository postRepository;
 
+    //컨슘테스트
     @RabbitListener(queues = "CREATE_POST_QUEUE")
     public void handler(String message) throws JsonProcessingException {
         Post post = objectMapper.readValue(message, Post.class);
