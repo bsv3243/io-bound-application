@@ -14,12 +14,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PostController {
 
-    private static final int PAGE_SIZE = 20;
-
     private final PostRepository postRepository;
     private final Producer producer;
     private final ObjectMapper objectMapper;
-    private final PostCacheService postCacheService;
 
     // 1. 글을 작성한다.
     @PostMapping("/post")
@@ -30,28 +27,11 @@ public class PostController {
 //        return postRepository.save(post);
     }
 
-    // 2-1. 글 목록을 조회한다.
-    // 2-2 글 목록을 페이징하여 반환
-    @GetMapping("/posts")
-    public Page<Post> getPostList(@RequestParam(value = "page", defaultValue = "1") Integer page) {
-        if(page.equals(1)) {
-            return postCacheService.getFirstPostPage();
-        } else {
-            PageRequest request = PageRequest.of(page - 1, PAGE_SIZE, Sort.by("id").descending());
-            return postRepository.findAll(request);
-        }
-    }
-    
-    // 3. 글 번호로 조회
-    @GetMapping("/post/{id}")
-    public Post getPostById(@PathVariable("id") Long id) {
-        return postRepository.findById(id).get();
-    }
-    
+
     // 4. 글 내용으로 검색 -> 해당 내용이 포함된 모든 글
     @GetMapping("/search")
     public List<Post> getPostByContent(@RequestParam("content") String content) {
-        return postRepository.findByContentContains(content);
+        return postRepository.findByContent(content);
     }
 
 }
